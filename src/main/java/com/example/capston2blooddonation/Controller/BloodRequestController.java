@@ -1,0 +1,67 @@
+package com.example.capston2blooddonation.Controller;
+
+import com.example.capston2blooddonation.Model.BloodRequest;
+import com.example.capston2blooddonation.Service.BloodRequestService;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.validation.Errors;
+import org.springframework.web.bind.annotation.*;
+
+@RestController
+@RequestMapping("/api/v1/bloodrequest")
+@RequiredArgsConstructor
+public class BloodRequestController {
+
+    private final BloodRequestService bloodRequestService;
+
+    @GetMapping("/get")
+    public ResponseEntity<?> getAllBloodRequests() {
+        return ResponseEntity.status(200).body(bloodRequestService.getAllBloodRequest());
+    }
+
+    @GetMapping("/get/{id}")
+    public ResponseEntity<?> getBloodRequestById(@PathVariable Integer id) {
+        BloodRequest bloodRequest = bloodRequestService.getBloodRequestById(id);
+
+        if (bloodRequest == null) {
+            return ResponseEntity.status(404).body("Blood Request not found");
+        }
+        return ResponseEntity.status(200).body(bloodRequest);
+    }
+
+    @PostMapping("/add")
+    public ResponseEntity<?> addBloodRequest(@Valid @RequestBody BloodRequest newBloodRequest, Errors errors) {
+        if (errors.hasErrors()) {
+            String message = errors.getFieldError().getDefaultMessage();
+            return ResponseEntity.status(400).body(message);
+        }
+        bloodRequestService.addBloodRequest(newBloodRequest);
+        return ResponseEntity.status(200).body("BloodRequest Added Successfully");
+    }
+
+    @PutMapping("/update/{id}")
+    public ResponseEntity<?> updateBloodRequest(@PathVariable Integer id, @Valid @RequestBody BloodRequest newBloodRequest, Errors errors) {
+        if (errors.hasErrors()) {
+            String message = errors.getFieldError().getDefaultMessage();
+            return ResponseEntity.status(400).body(message);
+        }
+        BloodRequest updatedBloodRequest = bloodRequestService.updateBloodRequest(id, newBloodRequest);
+        if (updatedBloodRequest == null) {
+            return ResponseEntity.status(404).body("BloodRequest Not found");
+        }
+        return ResponseEntity.status(200).body(updatedBloodRequest);
+    }
+
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<?> deleteBloodRequest(@PathVariable Integer id){
+        boolean isDeleted = bloodRequestService.deleteBloodRequest(id);
+
+        if(!isDeleted){
+            return ResponseEntity.status(404).body("BloodRequest Not Found");
+        }
+        return ResponseEntity.status(200).body("BloodRequest Deleted Successfully ");
+    }
+
+
+}
