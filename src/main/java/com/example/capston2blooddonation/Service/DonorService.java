@@ -34,6 +34,7 @@ public class DonorService {
 
         oldDonor.setName(newDonor.getName());
         oldDonor.setPhoneNumber(newDonor.getPhoneNumber());
+        oldDonor.setEmail(newDonor.getEmail());
         oldDonor.setBloodType(newDonor.getBloodType());
         oldDonor.setAge(newDonor.getAge());
         oldDonor.setCity(newDonor.getCity());

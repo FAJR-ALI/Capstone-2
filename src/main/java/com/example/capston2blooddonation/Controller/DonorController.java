@@ -31,7 +31,7 @@ public class DonorController {
         return ResponseEntity.status(200).body(donorService.getAllDonors());
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/get/{id}")
     public ResponseEntity<?> getDonorById(@PathVariable Integer id){
         Donor donor = donorService.getDonorById(id);
         if(donor == null ){
@@ -40,7 +40,7 @@ public class DonorController {
         return ResponseEntity.status(200).body(donor);
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("/update/{id}")
     public ResponseEntity<?> updateDonor(@PathVariable Integer id, @Valid @RequestBody Donor donor, Errors errors){
         if(errors.hasErrors()){
             String message = errors.getFieldError().getDefaultMessage();
@@ -54,7 +54,7 @@ public class DonorController {
         return ResponseEntity.status(200).body(updatedDonor);
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/delete/{id}")
     public ResponseEntity<?> deleteDonor(@PathVariable Integer id){
         boolean deletedDonor =donorService.deleteDonor(id);
 

@@ -7,9 +7,11 @@ import jakarta.persistence.Id;
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Entity
 @AllArgsConstructor
+@NoArgsConstructor
 @Data
 public class Donor {
 
@@ -17,15 +19,20 @@ public class Donor {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @NotNull
+    @NotEmpty
     @Size(min = 7, message = "Please Write down your full name")
     private String name;
 
-    @NotNull
+    @NotEmpty
     @Pattern(regexp = "^[0-9]{10}$", message = "please Enter your phone number correctly ")
     private String phoneNumber;
 
-    @NotNull
+    @NotEmpty
+    @Email
+    private String email;
+
+    @NotEmpty
+    @Pattern(regexp = "^(A|B|AB|O)[+-]$",message = "Blood type must be A+, A-, B+, B-, AB+, AB-, O+, or O-")
     private String bloodType;
 
     @NotNull
@@ -34,6 +41,5 @@ public class Donor {
 
     @NotEmpty
     private String city;
-
 
 }
