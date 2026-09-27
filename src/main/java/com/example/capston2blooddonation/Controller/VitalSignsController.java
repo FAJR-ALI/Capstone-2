@@ -1,0 +1,83 @@
+package com.example.capston2blooddonation.Controller;
+
+import com.example.capston2blooddonation.Model.VitalSigns;
+import com.example.capston2blooddonation.Service.VitalSignsService;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.validation.Errors;
+import org.springframework.web.bind.annotation.*;
+
+@RestController
+@RequestMapping("/api/v1/vitals")
+@RequiredArgsConstructor
+public class VitalSignsController {
+
+    private final VitalSignsService vitalSignsService;
+
+    @GetMapping("/get")
+    public ResponseEntity<?> getAllVitalSigns() {
+        return ResponseEntity.status(200)
+                .body(vitalSignsService.getAllVitalSigns());
+    }
+
+    @GetMapping("/get/{id}")
+    public ResponseEntity<?> getVitalSignsById(@PathVariable Integer id) {
+        VitalSigns vitalSigns =vitalSignsService.getVitalSignsById(id);
+
+        if (vitalSigns == null) {
+            return ResponseEntity.status(404).body("Vital Signs not found");
+        }
+        return ResponseEntity.status(200).body(vitalSigns);
+    }
+
+    @PostMapping("/add")
+    public ResponseEntity<?> addVitalSigns(@Valid @RequestBody VitalSigns vitalSigns, Errors errors) {
+        if (errors.hasErrors()) {
+            String message =errors.getFieldError().getDefaultMessage();
+            return ResponseEntity.status(400).body(message);
+        }
+        vitalSignsService.addVitalSigns(vitalSigns);
+
+        return ResponseEntity.status(200).body("Vital Signs Added Successfully");
+    }
+
+    @PutMapping("/update/{id}")
+    public ResponseEntity<?> updateVitalSigns(@PathVariable Integer id, @Valid @RequestBody VitalSigns newVitalSigns,Errors errors) {
+        if (errors.hasErrors()) {
+            String message =errors.getFieldError().getDefaultMessage();
+            return ResponseEntity.status(400).body(message);
+        }
+        VitalSigns updatedVitalSigns = vitalSignsService.updateVitalSigns(id, newVitalSigns);
+        if (updatedVitalSigns == null) {
+            return ResponseEntity.status(404).body("Vital Signs not found");
+        }
+        return ResponseEntity.status(200).body(updatedVitalSigns);
+    }
+
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<?> deleteVitalSigns(@PathVariable Integer id) {
+        boolean isDeleted =vitalSignsService.deleteVitalSigns(id);
+        if (!isDeleted) {
+            return ResponseEntity.status(404).body("Vital Signs not found");
+        }
+        return ResponseEntity.status(200).body("Vital Signs Deleted Successfully");
+    }
+
+    @GetMapping("/donor/{donorId}")
+    public ResponseEntity<?> getVitalSignsByDonor(@PathVariable Integer donorId) {
+
+        return ResponseEntity.status(200).body(vitalSignsService.getVitalSignsByDonor(donorId));
+    }
+
+    @GetMapping("/eligibility/{donorId}")
+    public ResponseEntity<?> checkDonorEligibility(@PathVariable Integer donorId) {
+        return ResponseEntity.status(200).body(vitalSignsService.checkDonorEligibility(donorId));
+    }
+
+    @GetMapping("/eligible")
+    public ResponseEntity<?> getEligibleDonors() {
+        return ResponseEntity.status(200).body(vitalSignsService.getEligibleDonors());
+    }
+
+}
