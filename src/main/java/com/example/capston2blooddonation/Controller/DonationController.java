@@ -1,5 +1,6 @@
 package com.example.capston2blooddonation.Controller;
 
+import com.example.capston2blooddonation.ApiResponse.ApiResponse;
 import com.example.capston2blooddonation.Model.Donation;
 import com.example.capston2blooddonation.Service.DonationService;
 import lombok.RequiredArgsConstructor;
@@ -22,7 +23,7 @@ public class DonationController {
     public ResponseEntity<?> getDonationById(@PathVariable Integer id) {
         Donation donation = donationService.getDonationById(id);
         if (donation == null) {
-            return ResponseEntity.status(404).body("Donation not found");
+            return ResponseEntity.status(404).body(new ApiResponse("Donation not found"));
         }
         return ResponseEntity.status(200).body(donation);
     }
@@ -30,8 +31,7 @@ public class DonationController {
     @PostMapping("/add")
     public ResponseEntity<?> addDonation(@RequestBody Donation donation) {
         donationService.addDonation(donation);
-        return ResponseEntity.status(200)
-                .body("Donation Added Successfully");
+        return ResponseEntity.status(200).body(new ApiResponse("Donation Added Successfully"));
     }
 
     @PutMapping("/update/{id}")
@@ -39,7 +39,7 @@ public class DonationController {
         Donation updatedDonation = donationService.updateDonation(id, newDonation);
 
         if (updatedDonation == null) {
-            return ResponseEntity.status(404).body("Donation not found");
+            return ResponseEntity.status(404).body(new ApiResponse("Donation not found"));
         }
         return ResponseEntity.status(200).body(updatedDonation);
     }
@@ -49,9 +49,9 @@ public class DonationController {
         boolean isDeleted = donationService.deleteDonation(id);
 
         if (!isDeleted) {
-            return ResponseEntity.status(404).body("Donation not found");
+            return ResponseEntity.status(404).body(new ApiResponse("Donation not found"));
         }
-        return ResponseEntity.status(200).body("Donation Deleted Successfully");
+        return ResponseEntity.status(200).body(new ApiResponse("Donation Deleted Successfully"));
     }
 
     @GetMapping("/count/{donorId}")

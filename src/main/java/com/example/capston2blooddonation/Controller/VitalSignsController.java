@@ -1,5 +1,6 @@
 package com.example.capston2blooddonation.Controller;
 
+import com.example.capston2blooddonation.ApiResponse.ApiResponse;
 import com.example.capston2blooddonation.Model.VitalSigns;
 import com.example.capston2blooddonation.Service.VitalSignsService;
 import jakarta.validation.Valid;
@@ -17,8 +18,7 @@ public class VitalSignsController {
 
     @GetMapping("/get")
     public ResponseEntity<?> getAllVitalSigns() {
-        return ResponseEntity.status(200)
-                .body(vitalSignsService.getAllVitalSigns());
+        return ResponseEntity.status(200).body(vitalSignsService.getAllVitalSigns());
     }
 
     @GetMapping("/get/{id}")
@@ -26,7 +26,7 @@ public class VitalSignsController {
         VitalSigns vitalSigns =vitalSignsService.getVitalSignsById(id);
 
         if (vitalSigns == null) {
-            return ResponseEntity.status(404).body("Vital Signs not found");
+            return ResponseEntity.status(404).body(new ApiResponse("Vital Signs not found"));
         }
         return ResponseEntity.status(200).body(vitalSigns);
     }
@@ -39,7 +39,7 @@ public class VitalSignsController {
         }
         vitalSignsService.addVitalSigns(vitalSigns);
 
-        return ResponseEntity.status(200).body("Vital Signs Added Successfully");
+        return ResponseEntity.status(200).body(new ApiResponse("Vital Signs Added Successfully"));
     }
 
     @PutMapping("/update/{id}")
@@ -50,7 +50,7 @@ public class VitalSignsController {
         }
         VitalSigns updatedVitalSigns = vitalSignsService.updateVitalSigns(id, newVitalSigns);
         if (updatedVitalSigns == null) {
-            return ResponseEntity.status(404).body("Vital Signs not found");
+            return ResponseEntity.status(404).body(new ApiResponse("Vital Signs not found"));
         }
         return ResponseEntity.status(200).body(updatedVitalSigns);
     }
@@ -59,9 +59,9 @@ public class VitalSignsController {
     public ResponseEntity<?> deleteVitalSigns(@PathVariable Integer id) {
         boolean isDeleted =vitalSignsService.deleteVitalSigns(id);
         if (!isDeleted) {
-            return ResponseEntity.status(404).body("Vital Signs not found");
+            return ResponseEntity.status(404).body(new ApiResponse("Vital Signs not found"));
         }
-        return ResponseEntity.status(200).body("Vital Signs Deleted Successfully");
+        return ResponseEntity.status(200).body(new ApiResponse("Vital Signs Deleted Successfully"));
     }
 
     @GetMapping("/donor/{donorId}")

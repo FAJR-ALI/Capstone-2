@@ -76,11 +76,11 @@ public class DonationService {
         long count = donationRepository.countByDonorId(donorId);
 
         if (count >= 6) {
-            return "Diamond";
+            return "Diamond Badge";
         } else if (count >= 4) {
-            return "Gold";
+            return "Gold Badge";
         } else if (count >= 2) {
-            return "Silver";
+            return "Silver Badge";
         } else {
             return "No Badge";
         }

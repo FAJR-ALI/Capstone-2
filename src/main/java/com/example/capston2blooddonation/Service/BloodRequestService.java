@@ -45,4 +45,16 @@ public class BloodRequestService {
         bloodRequestRepository.deleteById(id);
         return true;
     }
+
+    public List<BloodRequest> getBloodRequestsByCity(String city) {
+        return bloodRequestRepository.findByCity(city);
+    }
+
+    public List<BloodRequest> getBloodRequestsByBloodType(String bloodType) {
+        return bloodRequestRepository.findByBloodType(bloodType);
+    }
+
+    public List<BloodRequest> getBloodRequestsByQuantity(Integer quantity) {
+        return bloodRequestRepository.findByQuantityGreaterThanEqual(quantity);
+    }
 }

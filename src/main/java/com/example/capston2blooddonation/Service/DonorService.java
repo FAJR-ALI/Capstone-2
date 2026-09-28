@@ -59,5 +59,9 @@ public class DonorService {
         return donorRepository.findByBloodType(bloodType);
     }
 
+    public List<Donor> getDonorsByBloodTypeAndCity(String bloodType, String city) {
+        return donorRepository.findByBloodTypeAndCity(bloodType, city);
+    }
+
 
 }

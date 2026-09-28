@@ -1,5 +1,6 @@
 package com.example.capston2blooddonation.Controller;
 
+import com.example.capston2blooddonation.ApiResponse.ApiResponse;
 import com.example.capston2blooddonation.Model.Donor;
 import com.example.capston2blooddonation.Service.DonorService;
 import jakarta.validation.Valid;
@@ -35,7 +36,7 @@ public class DonorController {
     public ResponseEntity<?> getDonorById(@PathVariable Integer id){
         Donor donor = donorService.getDonorById(id);
         if(donor == null ){
-            return ResponseEntity.status(404).body("No Donor Found with provided Id ");
+            return ResponseEntity.status(404).body(new ApiResponse("No Donor Found with provided Id "));
         }
         return ResponseEntity.status(200).body(donor);
     }
@@ -49,7 +50,7 @@ public class DonorController {
 
         Donor updatedDonor = donorService.updateDonor(id, donor);
         if(updatedDonor == null){
-            return ResponseEntity.status(404).body("No Donor found with provided Id");
+            return ResponseEntity.status(404).body(new ApiResponse("No Donor found with provided Id"));
         }
         return ResponseEntity.status(200).body(updatedDonor);
     }
@@ -59,9 +60,9 @@ public class DonorController {
         boolean deletedDonor =donorService.deleteDonor(id);
 
         if(!deletedDonor){
-            return ResponseEntity.status(404).body("Donor not foud");
+            return ResponseEntity.status(404).body(new ApiResponse("Donor not foud"));
         }
-        return ResponseEntity.status(200).body("Donor Deleted Successfully");
+        return ResponseEntity.status(200).body(new ApiResponse("Donor Deleted Successfully"));
     }
 
     @GetMapping("/city/{city}")
@@ -70,7 +71,7 @@ public class DonorController {
         List<Donor> cityDonors = donorService.getDonorByCity(city);
 
         if(cityDonors.isEmpty()){
-            return ResponseEntity.status(404).body("No donors found in this city");
+            return ResponseEntity.status(404).body(new ApiResponse("No donors found in this city"));
         }
         return ResponseEntity.status(200).body(cityDonors);
     }
@@ -80,8 +81,13 @@ public class DonorController {
         List<Donor> bloodTypeDonors = donorService.getDonorByBloodType(bloodType);
 
         if(bloodTypeDonors.isEmpty()){
-            return ResponseEntity.status(404).body("No Donors found with provided Blood Type ");
+            return ResponseEntity.status(404).body(new ApiResponse("No Donors found with provided Blood Type "));
         }
         return ResponseEntity.status(200).body(bloodTypeDonors);
+    }
+
+    @GetMapping("/blood-type/{bloodType}/city/{city}")
+    public ResponseEntity<?> getDonorsByBloodTypeAndCity(@PathVariable String bloodType, @PathVariable String city) {
+        return ResponseEntity.status(200).body(donorService.getDonorsByBloodTypeAndCity(bloodType, city));
     }
 }

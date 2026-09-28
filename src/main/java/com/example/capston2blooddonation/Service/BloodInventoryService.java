@@ -56,4 +56,7 @@ public class BloodInventoryService {
         return bloodInventoryRepository.getTotalQuantityByBloodType(bloodType);
     }
 
+    public Integer getTotalQuantityByCity(String city) {
+        return bloodInventoryRepository.getTotalQuantityByCity(city);
+    }
 }

@@ -19,4 +19,8 @@ public interface BloodInventoryRepository extends JpaRepository<BloodInventory, 
     Integer getTotalQuantityByBloodType(@Param("bloodType") String bloodType);
 
     BloodInventory findFirstByBloodType(String bloodType);
+
+    @Query("SELECT COALESCE(SUM(b.quantity), 0) FROM BloodInventory b WHERE b.city = :city")
+    Integer getTotalQuantityByCity(@Param("city") String city);
+
 }

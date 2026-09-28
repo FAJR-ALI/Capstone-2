@@ -1,5 +1,6 @@
 package com.example.capston2blooddonation.Controller;
 
+import com.example.capston2blooddonation.ApiResponse.ApiResponse;
 import com.example.capston2blooddonation.Model.BloodInventory;
 import com.example.capston2blooddonation.Service.BloodInventoryService;
 import jakarta.validation.Valid;
@@ -27,7 +28,7 @@ public class BloodInventoryController {
         BloodInventory bloodInventory = bloodInventoryService.getBloodInventoryById(id);
 
         if (bloodInventory == null) {
-            return ResponseEntity.status(404).body("Blood Inventory not found");
+            return ResponseEntity.status(404).body(new ApiResponse("Blood Inventory not found"));
         }
 
         return ResponseEntity.status(200).body(bloodInventory);
@@ -41,7 +42,7 @@ public class BloodInventoryController {
         }
 
         bloodInventoryService.addBloodInventory(bloodInventory);
-        return ResponseEntity.status(200).body("Blood Inventory Added Successfully");
+        return ResponseEntity.status(200).body(new ApiResponse("Blood Inventory Added Successfully"));
     }
 
     @PutMapping("/update/{id}")
@@ -52,7 +53,7 @@ public class BloodInventoryController {
         }
         BloodInventory updatedBloodInventory = bloodInventoryService.updateBloodInventory(id, newBloodInventory);
         if (updatedBloodInventory == null) {
-            return ResponseEntity.status(404).body("Blood Inventory not found");
+            return ResponseEntity.status(404).body(new ApiResponse("Blood Inventory not found"));
         }
 
         return ResponseEntity.status(200).body(updatedBloodInventory);
@@ -63,9 +64,9 @@ public class BloodInventoryController {
     public ResponseEntity<?> deleteBloodInventory(@PathVariable Integer id) {
         boolean isDeleted = bloodInventoryService.deleteBloodInventory(id);
         if (!isDeleted) {
-            return ResponseEntity.status(404).body("Blood Inventory not found");
+            return ResponseEntity.status(404).body(new ApiResponse("Blood Inventory not found"));
         }
-        return ResponseEntity.status(200).body("Blood Inventory Deleted Successfully");
+        return ResponseEntity.status(200).body(new ApiResponse("Blood Inventory Deleted Successfully"));
     }
 
     @GetMapping("/blood-type/{bloodType}")
@@ -81,5 +82,10 @@ public class BloodInventoryController {
     @GetMapping("/quantity/{bloodType}")
     public ResponseEntity<?> getTotalQuantityByBloodType(@PathVariable String bloodType) {
         return ResponseEntity.status(200).body(bloodInventoryService.getTotalQuantityByBloodType(bloodType));
+    }
+
+    @GetMapping("/quantity/city/{city}")
+    public ResponseEntity<?> getTotalQuantityByCity(@PathVariable String city) {
+        return ResponseEntity.status(200).body(bloodInventoryService.getTotalQuantityByCity(city));
     }
 }

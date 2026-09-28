@@ -1,5 +1,6 @@
 package com.example.capston2blooddonation.Controller;
 
+import com.example.capston2blooddonation.ApiResponse.ApiResponse;
 import com.example.capston2blooddonation.Model.BloodRequest;
 import com.example.capston2blooddonation.Service.BloodRequestService;
 import jakarta.validation.Valid;
@@ -25,7 +26,7 @@ public class BloodRequestController {
         BloodRequest bloodRequest = bloodRequestService.getBloodRequestById(id);
 
         if (bloodRequest == null) {
-            return ResponseEntity.status(404).body("Blood Request not found");
+            return ResponseEntity.status(404).body(new ApiResponse("Blood Request not found"));
         }
         return ResponseEntity.status(200).body(bloodRequest);
     }
@@ -37,7 +38,7 @@ public class BloodRequestController {
             return ResponseEntity.status(400).body(message);
         }
         bloodRequestService.addBloodRequest(newBloodRequest);
-        return ResponseEntity.status(200).body("BloodRequest Added Successfully");
+        return ResponseEntity.status(200).body(new ApiResponse("BloodRequest Added Successfully"));
     }
 
     @PutMapping("/update/{id}")
@@ -48,7 +49,7 @@ public class BloodRequestController {
         }
         BloodRequest updatedBloodRequest = bloodRequestService.updateBloodRequest(id, newBloodRequest);
         if (updatedBloodRequest == null) {
-            return ResponseEntity.status(404).body("BloodRequest Not found");
+            return ResponseEntity.status(404).body(new ApiResponse("BloodRequest Not found"));
         }
         return ResponseEntity.status(200).body(updatedBloodRequest);
     }
@@ -58,10 +59,23 @@ public class BloodRequestController {
         boolean isDeleted = bloodRequestService.deleteBloodRequest(id);
 
         if(!isDeleted){
-            return ResponseEntity.status(404).body("BloodRequest Not Found");
+            return ResponseEntity.status(404).body(new ApiResponse("BloodRequest Not Found"));
         }
-        return ResponseEntity.status(200).body("BloodRequest Deleted Successfully ");
+        return ResponseEntity.status(200).body(new ApiResponse("BloodRequest Deleted Successfully "));
     }
 
+    @GetMapping("/city/{city}")
+    public ResponseEntity<?> getBloodRequestsByCity(@PathVariable String city) {
+        return ResponseEntity.status(200).body(bloodRequestService.getBloodRequestsByCity(city));
+    }
 
+    @GetMapping("/blood-type/{bloodType}")
+    public ResponseEntity<?> getBloodRequestsByBloodType(@PathVariable String bloodType) {
+        return ResponseEntity.status(200).body(bloodRequestService.getBloodRequestsByBloodType(bloodType));
+    }
+
+    @GetMapping("/quantity/{quantity}")
+    public ResponseEntity<?> getBloodRequestsByQuantity(@PathVariable Integer quantity) {
+        return ResponseEntity.status(200).body(bloodRequestService.getBloodRequestsByQuantity(quantity));
+    }
 }

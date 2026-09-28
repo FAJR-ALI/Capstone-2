@@ -15,4 +15,7 @@ public interface DonorRepository extends JpaRepository<Donor, Integer> {
     List<Donor> findByCity(@Param("city") String city);
 
     List<Donor> findByBloodType(String bloodType);
+
+    List<Donor> findByBloodTypeAndCity(String bloodType, String city);
+
 }
