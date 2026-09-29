@@ -25,7 +25,7 @@ public class DonorService {
     public Donor getDonorById(Integer id){
         Donor founddonor = donorRepository.findById(id).orElse(null);
         if(founddonor == null){
-            throw new ApiException("DonorNot Found");
+            throw new ApiException("Donor with provided Id NotFound");
         }
         return founddonor;
     }
@@ -33,6 +33,9 @@ public class DonorService {
     public void updateDonor(Integer id, Donor newDonor){
         Donor oldDonor = donorRepository.findById(id).orElse(null);
 
+        if(oldDonor == null){
+            throw new ApiException("Donor not found to be updated");
+        }
         oldDonor.setName(newDonor.getName());
         oldDonor.setPhoneNumber(newDonor.getPhoneNumber());
         oldDonor.setEmail(newDonor.getEmail());
@@ -52,15 +55,28 @@ public class DonorService {
     }
 
     public List<Donor> getDonorByCity(String city){
-        return donorRepository.findByCity(city);
+        List<Donor> donorByCity = donorRepository.findByCity(city);
+        if(donorByCity.isEmpty()){
+            throw new ApiException("No Donors found in the given City");
+        }
+        return donorByCity;
     }
 
     public List<Donor> getDonorByBloodType(String bloodType){
-        return donorRepository.findByBloodType(bloodType);
+        List<Donor> donorByBloodType = donorRepository.findByBloodType(bloodType);
+
+        if(donorByBloodType.isEmpty()){
+            throw new ApiException("No donors found with the given BloodType");
+        }
+        return donorByBloodType;
     }
 
     public List<Donor> getDonorsByBloodTypeAndCity(String bloodType, String city) {
-        return donorRepository.findByBloodTypeAndCity(bloodType, city);
+        List<Donor> donorBC = donorRepository.findByBloodTypeAndCity(bloodType, city);
+        if(donorBC.isEmpty()){
+            throw new ApiException("No donor's found with given BloodType and City");
+        }
+        return donorBC;
     }
 
 

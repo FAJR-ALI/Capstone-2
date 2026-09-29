@@ -42,7 +42,6 @@ public class DonorController {
 
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<?> deleteDonor(@PathVariable Integer id){
-
         donorService.deleteDonor(id);
         return ResponseEntity.status(200).body(new ApiResponse("Donor Deleted Successfully"));
     }
@@ -52,20 +51,12 @@ public class DonorController {
     public ResponseEntity<?> getByCity(@PathVariable String city){
 
         List<Donor> cityDonors = donorService.getDonorByCity(city);
-
-        if(cityDonors.isEmpty()){
-            return ResponseEntity.status(404).body(new ApiResponse("No donors found in this city"));
-        }
         return ResponseEntity.status(200).body(cityDonors);
     }
 
     @GetMapping("/bloodType/{bloodType}")
     public ResponseEntity<?> getByBloodType(@PathVariable String bloodType){
         List<Donor> bloodTypeDonors = donorService.getDonorByBloodType(bloodType);
-
-        if(bloodTypeDonors.isEmpty()){
-            return ResponseEntity.status(404).body(new ApiResponse("No Donors found with provided Blood Type "));
-        }
         return ResponseEntity.status(200).body(bloodTypeDonors);
     }
 

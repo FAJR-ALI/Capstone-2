@@ -26,46 +26,25 @@ public class BloodInventoryController {
     @GetMapping("/get/{id}")
     public ResponseEntity<?> getBloodInventoryById(@PathVariable Integer id) {
         BloodInventory bloodInventory = bloodInventoryService.getBloodInventoryById(id);
-
-        if (bloodInventory == null) {
-            return ResponseEntity.status(404).body(new ApiResponse("Blood Inventory not found"));
-        }
-
         return ResponseEntity.status(200).body(bloodInventory);
     }
 
     @PostMapping("/add")
-    public ResponseEntity<?> addBloodInventory(@Valid @RequestBody BloodInventory bloodInventory, Errors errors) {
-        if (errors.hasErrors()) {
-            String message =errors.getFieldError().getDefaultMessage();
-            return ResponseEntity.status(400).body(message);
-        }
-
+    public ResponseEntity<?> addBloodInventory(@Valid @RequestBody BloodInventory bloodInventory) {
         bloodInventoryService.addBloodInventory(bloodInventory);
         return ResponseEntity.status(200).body(new ApiResponse("Blood Inventory Added Successfully"));
     }
 
     @PutMapping("/update/{id}")
-    public ResponseEntity<?> updateBloodInventory(@PathVariable Integer id, @Valid @RequestBody BloodInventory newBloodInventory,Errors errors) {
-        if (errors.hasErrors()) {
-            String message =errors.getFieldError().getDefaultMessage();
-            return ResponseEntity.status(400).body(message);
-        }
+    public ResponseEntity<?> updateBloodInventory(@PathVariable Integer id, @Valid @RequestBody BloodInventory newBloodInventory) {
         BloodInventory updatedBloodInventory = bloodInventoryService.updateBloodInventory(id, newBloodInventory);
-        if (updatedBloodInventory == null) {
-            return ResponseEntity.status(404).body(new ApiResponse("Blood Inventory not found"));
-        }
-
         return ResponseEntity.status(200).body(updatedBloodInventory);
     }
 
 
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<?> deleteBloodInventory(@PathVariable Integer id) {
-        boolean isDeleted = bloodInventoryService.deleteBloodInventory(id);
-        if (!isDeleted) {
-            return ResponseEntity.status(404).body(new ApiResponse("Blood Inventory not found"));
-        }
+        bloodInventoryService.deleteBloodInventory(id);
         return ResponseEntity.status(200).body(new ApiResponse("Blood Inventory Deleted Successfully"));
     }
 

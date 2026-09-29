@@ -1,5 +1,7 @@
 package com.example.capston2blooddonation.Service;
 
+import com.example.capston2blooddonation.ApiResponse.ApiException;
+import com.example.capston2blooddonation.ApiResponse.ApiResponse;
 import com.example.capston2blooddonation.Model.Donor;
 import com.example.capston2blooddonation.Model.VitalSigns;
 import com.example.capston2blooddonation.Repository.VitalSignsRepository;
@@ -19,7 +21,11 @@ public class VitalSignsService {
     }
 
     public VitalSigns getVitalSignsById(Integer id) {
-        return vitalSignsRepository.findById(id).orElse(null);
+        VitalSigns v = vitalSignsRepository.findById(id).orElse(null);
+        if(v == null){
+            throw new ApiException("No VitalSigns for given Donor id");
+        }
+        return v;
     }
 
     public VitalSigns addVitalSigns(VitalSigns vitalSigns) {
@@ -30,7 +36,7 @@ public class VitalSignsService {
         VitalSigns oldVitalSigns =vitalSignsRepository.findById(id).orElse(null);
 
         if (oldVitalSigns == null) {
-            return null;
+            throw new ApiException("no vital Signs to update");
         }
 
         oldVitalSigns.setBloodPressure(newVitalSigns.getBloodPressure());
@@ -42,45 +48,51 @@ public class VitalSignsService {
         return vitalSignsRepository.save(oldVitalSigns);
     }
 
-    public boolean deleteVitalSigns(Integer id) {
-
+    public void deleteVitalSigns(Integer id) {
         if (!vitalSignsRepository.existsById(id)) {
-            return false;
+           throw new ApiException("no vital Signs to delete with provided id");
         }
         vitalSignsRepository.deleteById(id);
-        return true;
+
     }
 
     public List<VitalSigns> getVitalSignsByDonor(Integer donorId) {
+        List<VitalSigns> v = vitalSignsRepository.findByDonorId(donorId);
+        if(v.isEmpty()){
+            throw new ApiException("No vital signs void");
+        }
         return vitalSignsRepository.findByDonorId(donorId);
     }
 
-    public String checkDonorEligibility(Integer donorId) {
+    public ApiResponse checkDonorEligibility(Integer donorId) {
         VitalSigns vitalSigns =vitalSignsRepository.findTopByDonorIdOrderByIdDesc(donorId);
-
         if (vitalSigns == null) {
-            return "No Vital Signs found for this donor";
+            throw new ApiException("No Vital Signs found for this donor");
         }
 
         if (vitalSigns.getHeartRate() < 60 ||
                 vitalSigns.getHeartRate() > 100) {
-            return "Donor is not eligible: Heart rate is not within the normal range";
+            return new ApiResponse("Donor is not eligible: Heart rate is not within the normal range");
         }
 
         if (vitalSigns.getTemperature() < 36 ||
                 vitalSigns.getTemperature() > 37.5) {
-            return "Donor is not eligible: Temperature is not within the normal range";
+            return new ApiResponse("Donor is not eligible: Temperature is not within the normal range");
         }
 
         if (vitalSigns.getHemoglobinLevel() < 12.5) {
-            return  "Donor is not eligible: Hemoglobin level is too low";
+            return  new ApiResponse("Donor is not eligible: Hemoglobin level is too low");
         }
 
-        return "Donor is eligible";
+        return new ApiResponse("Donor is eligible");
     }
 
     public List<Donor> getEligibleDonors() {
-        return vitalSignsRepository.findEligibleDonors();
+        List<Donor> donors = vitalSignsRepository.findEligibleDonors();
+        if(donors.isEmpty()){
+            throw new ApiException("not eligibile donor found");
+        }
+        return donors;
     }
 
 }

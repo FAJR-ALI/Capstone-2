@@ -1,5 +1,7 @@
 package com.example.capston2blooddonation.Service;
 
+import com.example.capston2blooddonation.ApiResponse.ApiException;
+import com.example.capston2blooddonation.ApiResponse.ApiResponse;
 import com.example.capston2blooddonation.Model.BloodInventory;
 import com.example.capston2blooddonation.Model.Donation;
 import com.example.capston2blooddonation.Model.Donor;
@@ -25,7 +27,11 @@ public class DonationService {
     }
 
     public Donation getDonationById(Integer id) {
-        return donationRepository.findById(id).orElse(null);
+        Donation dId = donationRepository.findById(id).orElse(null);
+        if(dId == null){
+            throw new ApiException("No Dotation with provided Id");
+        }
+        return dId;
     }
 
     public Donation addDonation(Donation newDonation) {
@@ -51,38 +57,39 @@ public class DonationService {
 
     public Donation updateDonation(Integer id, Donation newDonation) {
         Donation oldDonation = donationRepository.findById(id).orElse(null);
-
-        if (oldDonation == null) {
-            return null;
+        if(oldDonation == null){
+            throw new ApiException("Cant found the Donation Please check the correct id");
         }
         oldDonation.setDonor(newDonation.getDonor());
         oldDonation.setBloodRequest(newDonation.getBloodRequest());
         return donationRepository.save(oldDonation);
     }
 
-    public boolean deleteDonation(Integer id) {
+    public void deleteDonation(Integer id) {
         if (!donationRepository.existsById(id)) {
-            return false;
+            throw new ApiException("no Donation with provide Id");
         }
         donationRepository.deleteById(id);
-        return true;
     }
 
     public Long getDonationCount(Integer donorId){
+        if (!donorRepository.existsById(donorId)){
+            throw new ApiException("Donor not found");
+        }
         return donationRepository.countByDonorId(donorId);
     }
 
-    public String getDonorBadge(Integer donorId) {
+    public ApiResponse getDonorBadge(Integer donorId) {
         long count = donationRepository.countByDonorId(donorId);
 
         if (count >= 6) {
-            return "Diamond Badge";
+            return new ApiResponse( "Diamond Badge");
         } else if (count >= 4) {
-            return "Gold Badge";
+            return new ApiResponse("Gold Badge");
         } else if (count >= 2) {
-            return "Silver Badge";
+            return new ApiResponse("Silver Badge");
         } else {
-            return "No Badge";
+            return new ApiResponse("No Badge");
         }
     }
 

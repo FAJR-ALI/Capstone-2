@@ -1,11 +1,13 @@
 package com.example.capston2blooddonation.Service;
 
+import com.example.capston2blooddonation.ApiResponse.ApiException;
 import com.example.capston2blooddonation.Model.BloodRequest;
 import com.example.capston2blooddonation.Repository.BloodRequestRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.concurrent.BlockingDeque;
 
 @Service
 @RequiredArgsConstructor
@@ -18,7 +20,11 @@ public class BloodRequestService {
     }
 
     public BloodRequest getBloodRequestById(Integer id){
-        return bloodRequestRepository.findById(id).orElse(null);
+        BloodRequest b = bloodRequestRepository.findById(id).orElse(null);
+        if(b ==null){
+            throw new ApiException("No BloodRequests found ");
+        }
+        return b;
     }
 
     public BloodRequest addBloodRequest(BloodRequest bloodRequest){
@@ -29,7 +35,7 @@ public class BloodRequestService {
 
         BloodRequest oldRequest = bloodRequestRepository.findById(id).orElse(null);
         if(oldRequest == null){
-            return null;
+            throw new ApiException("BloodRequest not found");
         }
         oldRequest.setBloodType(newBloodRequest.getBloodType());
         oldRequest.setQuantity(newBloodRequest.getQuantity());
@@ -38,23 +44,35 @@ public class BloodRequestService {
         return bloodRequestRepository.save(oldRequest);
     }
 
-    public boolean deleteBloodRequest(Integer id){
+    public void deleteBloodRequest(Integer id){
         if(!bloodRequestRepository.existsById(id)){
-            return false;
+            throw new ApiException("BloodRequest not found");
         }
         bloodRequestRepository.deleteById(id);
-        return true;
     }
 
     public List<BloodRequest> getBloodRequestsByCity(String city) {
-        return bloodRequestRepository.findByCity(city);
+        List<BloodRequest> li = bloodRequestRepository.findByCity(city);
+        if(li.isEmpty()){
+            throw new ApiException("No BloodRequest found for the provided city");
+        }
+        return li;
     }
 
     public List<BloodRequest> getBloodRequestsByBloodType(String bloodType) {
-        return bloodRequestRepository.findByBloodType(bloodType);
+        List<BloodRequest> ld = bloodRequestRepository.findByBloodType(bloodType);
+
+        if(ld.isEmpty()){
+            throw new ApiException("no found");
+        }
+        return ld;
     }
 
     public List<BloodRequest> getBloodRequestsByQuantity(Integer quantity) {
-        return bloodRequestRepository.findByQuantityGreaterThanEqual(quantity);
+        List<BloodRequest> lo = bloodRequestRepository.findByQuantityGreaterThanEqual(quantity);
+        if(lo.isEmpty()){
+            throw new ApiException("no found");
+        }
+        return lo;
     }
 }

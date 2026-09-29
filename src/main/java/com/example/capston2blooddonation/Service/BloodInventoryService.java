@@ -1,5 +1,6 @@
 package com.example.capston2blooddonation.Service;
 
+import com.example.capston2blooddonation.ApiResponse.ApiException;
 import com.example.capston2blooddonation.Model.BloodInventory;
 import com.example.capston2blooddonation.Repository.BloodInventoryRepository;
 import lombok.RequiredArgsConstructor;
@@ -17,7 +18,11 @@ public class BloodInventoryService {
     }
 
     public BloodInventory getBloodInventoryById(Integer id) {
-        return bloodInventoryRepository.findById(id).orElse(null);
+        BloodInventory p = bloodInventoryRepository.findById(id).orElse(null);
+        if (p ==null){
+            throw new ApiException("no Blood inventory found for provided BloodType");
+        }
+        return p;
     }
 
     public BloodInventory addBloodInventory(BloodInventory bloodInventory) {
@@ -26,9 +31,8 @@ public class BloodInventoryService {
 
     public BloodInventory updateBloodInventory(Integer id, BloodInventory newBloodInventory) {
         BloodInventory oldBloodInventory = bloodInventoryRepository.findById(id).orElse(null);
-
         if (oldBloodInventory == null) {
-            return null;
+            throw new ApiException("no Blood inventory found");
         }
         oldBloodInventory.setBloodType(newBloodInventory.getBloodType());
         oldBloodInventory.setQuantity(newBloodInventory.getQuantity());
@@ -36,27 +40,42 @@ public class BloodInventoryService {
         return bloodInventoryRepository.save(oldBloodInventory);
     }
 
-    public boolean deleteBloodInventory(Integer id) {
+    public void deleteBloodInventory(Integer id) {
         if (!bloodInventoryRepository.existsById(id)) {
-            return false;
+           throw new ApiException("No Inventory found to delete");
         }
         bloodInventoryRepository.deleteById(id);
-        return true;
     }
 
     public List<BloodInventory> getInventoryByBloodType(String bloodType) {
-        return bloodInventoryRepository.findByBloodType(bloodType);
+        List<BloodInventory> pp = bloodInventoryRepository.findByBloodType(bloodType);
+        if(pp.isEmpty()){
+            throw new ApiException("No Inventory found with provided BloodType and City");
+        }
+        return pp;
     }
 
     public List<BloodInventory> getInventoryByCity(String city) {
-        return bloodInventoryRepository.findByCity(city);
+        List<BloodInventory> ll = bloodInventoryRepository.findByCity(city);
+        if(ll.isEmpty()){
+            throw new ApiException("No Inventory found with provided City ");
+        }
+        return ll;
     }
 
     public Integer getTotalQuantityByBloodType(String bloodType) {
-        return bloodInventoryRepository.getTotalQuantityByBloodType(bloodType);
+        Integer n = bloodInventoryRepository.getTotalQuantityByBloodType(bloodType);
+        if(n == 0){
+            throw new ApiException("0 Quantity found for the provided blood type");
+        }
+        return n;
     }
 
     public Integer getTotalQuantityByCity(String city) {
-        return bloodInventoryRepository.getTotalQuantityByCity(city);
+        Integer m = bloodInventoryRepository.getTotalQuantityByCity(city);
+        if(m == 0){
+            throw new ApiException("No Quantity found with provided City");
+        }
+        return m;
     }
 }
