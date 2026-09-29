@@ -1,5 +1,6 @@
 package com.example.capston2blooddonation.Service;
 
+import com.example.capston2blooddonation.ApiResponse.ApiException;
 import com.example.capston2blooddonation.Model.Donor;
 import com.example.capston2blooddonation.Repository.DonorRepository;
 import lombok.RequiredArgsConstructor;
@@ -22,15 +23,15 @@ public class DonorService {
     }
 
     public Donor getDonorById(Integer id){
-        return donorRepository.findById(id).orElse(null);
+        Donor founddonor = donorRepository.findById(id).orElse(null);
+        if(founddonor == null){
+            throw new ApiException("DonorNot Found");
+        }
+        return founddonor;
     }
 
-    public Donor updateDonor(Integer id, Donor newDonor){
+    public void updateDonor(Integer id, Donor newDonor){
         Donor oldDonor = donorRepository.findById(id).orElse(null);
-
-        if(oldDonor == null){
-            return null;
-        }
 
         oldDonor.setName(newDonor.getName());
         oldDonor.setPhoneNumber(newDonor.getPhoneNumber());
@@ -38,17 +39,16 @@ public class DonorService {
         oldDonor.setBloodType(newDonor.getBloodType());
         oldDonor.setAge(newDonor.getAge());
         oldDonor.setCity(newDonor.getCity());
-        return donorRepository.save(oldDonor);
+        donorRepository.save(oldDonor);
     }
 
-    public boolean deleteDonor(Integer id){
+    public void deleteDonor(Integer id){
         Donor donor = donorRepository.findById(id).orElse(null);
-
         if(donor == null){
-            return false;
+            throw new ApiException("DonorNot Found");
         }
         donorRepository.delete(donor);
-        return true;
+
     }
 
     public List<Donor> getDonorByCity(String city){

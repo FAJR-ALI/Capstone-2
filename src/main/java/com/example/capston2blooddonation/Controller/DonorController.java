@@ -19,11 +19,7 @@ public class DonorController {
     private final DonorService donorService;
 
     @PostMapping("/add")
-    public ResponseEntity<?> addDonor(@Valid @RequestBody Donor donor, Errors errors){
-        if(errors.hasErrors()){
-            String message = errors.getFieldError().getDefaultMessage();
-            return ResponseEntity.status(400).body(message);
-        }
+    public ResponseEntity<?> addDonor(@Valid @RequestBody Donor donor){
         return ResponseEntity.status(200).body(donorService.addDonor(donor));
     }
 
@@ -35,35 +31,22 @@ public class DonorController {
     @GetMapping("/get/{id}")
     public ResponseEntity<?> getDonorById(@PathVariable Integer id){
         Donor donor = donorService.getDonorById(id);
-        if(donor == null ){
-            return ResponseEntity.status(404).body(new ApiResponse("No Donor Found with provided Id "));
-        }
         return ResponseEntity.status(200).body(donor);
     }
 
     @PutMapping("/update/{id}")
-    public ResponseEntity<?> updateDonor(@PathVariable Integer id, @Valid @RequestBody Donor donor, Errors errors){
-        if(errors.hasErrors()){
-            String message = errors.getFieldError().getDefaultMessage();
-            return ResponseEntity.status(400).body(message);
-        }
-
-        Donor updatedDonor = donorService.updateDonor(id, donor);
-        if(updatedDonor == null){
-            return ResponseEntity.status(404).body(new ApiResponse("No Donor found with provided Id"));
-        }
-        return ResponseEntity.status(200).body(updatedDonor);
+    public ResponseEntity<?> updateDonor(@PathVariable Integer id, @Valid @RequestBody Donor donor){
+        donorService.updateDonor(id, donor);
+        return ResponseEntity.status(200).body(new ApiResponse("Donor Updated Successfully"));
     }
 
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<?> deleteDonor(@PathVariable Integer id){
-        boolean deletedDonor =donorService.deleteDonor(id);
 
-        if(!deletedDonor){
-            return ResponseEntity.status(404).body(new ApiResponse("Donor not foud"));
-        }
+        donorService.deleteDonor(id);
         return ResponseEntity.status(200).body(new ApiResponse("Donor Deleted Successfully"));
     }
+
 
     @GetMapping("/city/{city}")
     public ResponseEntity<?> getByCity(@PathVariable String city){
