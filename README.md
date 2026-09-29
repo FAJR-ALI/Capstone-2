@@ -19,6 +19,7 @@ The Donor class represents people who can donate blood
 Extra Endpoints:
 - getDonorByCity
 - getDonorByBloodType
+- getDonorsByBloodTypeAndCity:Finds donors based on both blood type and city
   
 BloodRequest:
 The BloodRequest class represents a request for blood
@@ -27,6 +28,10 @@ It contains:
 - blood type,
 - quantity,
 - city
+Extra Endpoints:
+- getBloodRequestsByCity: Finds blood requests based on city
+- getBloodRequestsByBloodType: Finds blood requests based on blood type
+- getBloodRequestsByQuantity: Finds blood requests that require a specified quantity or more
 
 Donation:
 The Donation class represents a blood donation made by a donor for a specific blood request
@@ -66,6 +71,7 @@ Extra Endpoints:
 - getInventoryByBloodType: check for the blood unit available by bloodType
 - getInventoryByCity: check for the blood unit available by city
 - getTotalQuantityByBloodType: check for all the blood unit quantity that have the same bloodType
+- getTotalQuantityByCity: Returns the total quantity of blood units available in a specific city
 
 Relationships Between Classes:
 - The Donor class has a one-to-many relationship with Donation because one donor can make multiple donations
